@@ -1,27 +1,12 @@
-import { useState, useEffect } from 'react';
-import { portfolioApi } from '../services/api';
+import { portfolioData } from '../data/portfolioData';
 
 /**
- * Fetches the full portfolio from the backend once.
+ * Returns portfolio data locally without requiring a backend server.
  */
 export function usePortfolio() {
-  const [portfolio, setPortfolio] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-
-  useEffect(() => {
-    portfolioApi
-      .getFullPortfolio()
-      .then(data => {
-        setPortfolio(data);
-        setLoading(false);
-      })
-      .catch(err => {
-        console.warn('Backend is unavailable.', err.message);
-        setLoading(false);
-        setError('OFFLINE');
-      });
-  }, []);
-
-  return { portfolio, loading, error };
+  return {
+    portfolio: portfolioData,
+    loading: false,
+    error: null,
+  };
 }

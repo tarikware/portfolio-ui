@@ -8,6 +8,59 @@ function formatDate(dateStr) {
 }
 
 function ExperienceCard({ exp }) {
+  const hasMultipleRoles = Array.isArray(exp.roles) && exp.roles.length > 0;
+
+  if (hasMultipleRoles) {
+    return (
+      <div className="timeline-item">
+        <div style={{ marginBottom: '8px' }}>
+          <div className="timeline-item__company" style={{ fontSize: 'clamp(0.85rem, 2vw, 1.05rem)', marginBottom: '8px' }}>
+            {exp.company}
+          </div>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+            {exp.roles.map((r) => (
+              <div
+                key={r.title}
+                style={{
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  alignItems: 'baseline',
+                  flexWrap: 'wrap',
+                  gap: '8px',
+                  paddingLeft: '8px',
+                  borderLeft: '2px solid var(--pip-green-border)'
+                }}
+              >
+                <div className="timeline-item__role" style={{ fontSize: 'clamp(0.9rem, 2.2vw, 1.15rem)' }}>
+                  {r.title}
+                </div>
+                <div className="timeline-item__meta">
+                  <span className="timeline-item__date">
+                    {formatDate(r.startDate)} — {r.currentJob ? <span className="badge-current">ACTIVE</span> : formatDate(r.endDate)}
+                  </span>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {exp.location && (
+          <div style={{ marginBottom: '8px' }}>
+            <span className="timeline-item__location">◉ {exp.location}</span>
+          </div>
+        )}
+
+        {exp.bullets && exp.bullets.length > 0 && (
+          <ul className="timeline-item__bullets" aria-label={`Responsibilities at ${exp.company}`}>
+            {exp.bullets.map(b => (
+              <li key={b}>{b}</li>
+            ))}
+          </ul>
+        )}
+      </div>
+    );
+  }
+
   return (
     <div className="timeline-item">
       <div className="timeline-item__header">
@@ -45,6 +98,12 @@ ExperienceCard.propTypes = {
     endDate: PropTypes.string,
     currentJob: PropTypes.bool,
     location: PropTypes.string,
+    roles: PropTypes.arrayOf(PropTypes.shape({
+      title: PropTypes.string.isRequired,
+      startDate: PropTypes.string,
+      endDate: PropTypes.string,
+      currentJob: PropTypes.bool,
+    })),
     bullets: PropTypes.arrayOf(PropTypes.string),
   }).isRequired,
 };
